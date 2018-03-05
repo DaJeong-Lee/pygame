@@ -1,4 +1,6 @@
 # pygame
 
 source activate myenv
-pythonw test.py
+pythonw rabbit_game.py
+
+https://www.raywenderlich.com/24252/beginning-game-programming-for-teens-with-python
