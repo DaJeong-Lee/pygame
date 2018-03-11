@@ -9,15 +9,21 @@ import random
 pygame.init()
 width, height = 640, 480
 screen=pygame.display.set_mode((width, height))
+FPS = 160 # 프레임당 시간
+fpsClock = pygame.time.Clock()
+
+# 키 입력 체크
 keys = [False, False, False, False]
+# 플레이어위치
 playerpos=[100,100]
-pygame.key.set_repeat(10, 10) #key press repeatly
-acc=[0,0]
-arrows=[]
+#key press repeatly
+pygame.key.set_repeat(10, 10)
+acc=[0,0] #적을맞춘횟수, 화살발사횟수
+arrows=[] #화살좌표
 badtimer=100
 badtimer1=0
 badguys=[[640,100]]
-healthvalue=194
+healthvalue=194 #0이되면게임오버
 
 # 3 - Load images
 player = pygame.image.load("resources/images/dude.png")
@@ -40,8 +46,8 @@ while running:
     # 5 - clear the screen before drawing it again
     screen.fill(0)
     # 6 - draw the screen elements
-    for x in range(round(width / grass.get_width()) + 1):
-        for y in range(round(height / grass.get_height()) + 1):
+    for x in range(int(width / grass.get_width()) + 1):
+        for y in range(int(height / grass.get_height()) + 1):
             screen.blit(grass, (x * 100, y * 100))
     screen.blit(castle, (0, 30))
     screen.blit(castle, (0, 135))
@@ -92,6 +98,7 @@ while running:
             bullrect = pygame.Rect(arrow.get_rect())
             bullrect.left = bullet[1]
             bullrect.top = bullet[2]
+            # 적이랑 화살이랑 충돌했는지
             if badrect.colliderect(bullrect):
                 acc[0] += 1
                 badguys.pop(index)
@@ -116,6 +123,7 @@ while running:
 
     # 7 - update the screen
     pygame.display.flip()
+    fpsClock.tick(FPS) #게임 속도 조절
     # 8 - loop through the events
     for event in pygame.event.get():
         # check if the event is the X button
@@ -123,6 +131,7 @@ while running:
             # if it is quit the game
             pygame.quit()
             exit(0)
+        # 키를 누를때
         if event.type == pygame.KEYDOWN:
             if event.key == K_w:
                 keys[0] = True
@@ -132,6 +141,7 @@ while running:
                 keys[2] = True
             elif event.key == K_d:
                 keys[3] = True
+        # 키를 뗄 때
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_w:
                 keys[0] = False
@@ -143,19 +153,19 @@ while running:
                 keys[3] = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             position = pygame.mouse.get_pos()
-            acc[1] += 1
+            acc[1] += 1 #화살 발사 횟수 증가
             arrows.append([math.atan2(position[1] - (playerpos1[1] + 32), position[0] - (playerpos1[0] + 26)),
                            playerpos1[0] + 32, playerpos1[1] + 32])
 
-        # 9 - Move player
-        if keys[0]:
-            playerpos[1] -= 5
-        elif keys[2]:
-            playerpos[1] += 5
-        if keys[1]:
-            playerpos[0] -= 5
-        elif keys[3]:
-            playerpos[0] += 5
+    # 9 - Move player
+    if keys[0]:
+        playerpos[1] -= 5
+    elif keys[2]:
+        playerpos[1] += 5
+    if keys[1]:
+        playerpos[0] -= 5
+    elif keys[3]:
+        playerpos[0] += 5
 
     #10 - Win/Lose check
     if pygame.time.get_ticks()>=90000:
