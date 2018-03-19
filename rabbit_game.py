@@ -55,9 +55,13 @@ while running:
     screen.blit(castle, (0, 345))
     # 6.1 - Set player position and rotation
     position = pygame.mouse.get_pos()
+    #플레이어 위치를 기준으로 마우스위치와의 각도를 계산
     angle = math.atan2(position[1] - (playerpos[1] + 32), position[0] - (playerpos[0] + 26))
-    playerrot = pygame.transform.rotate(player, 360 - angle * 57.29)
+    #각도를 계산해서 로테이션
+    playerrot = pygame.transform.rotate(player, 360 - angle * 57.29) #라디안을 각도로 변경 57.29  = 180/3.14
+    #플레이어의 중심값을 구함(변한 위치를 구하기위해)
     playerpos1 = (playerpos[0] - playerrot.get_rect().width / 2, playerpos[1] - playerrot.get_rect().height / 2)
+    #플레이어가 움직인 위치와 각도를 그림
     screen.blit(playerrot, playerpos1)
     # 6.2 - Draw arrows
     for bullet in arrows:
